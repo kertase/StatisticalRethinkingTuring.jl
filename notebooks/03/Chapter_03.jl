@@ -14,6 +14,7 @@ begin
 	using StatsBase
 	using KernelDensity
 	using StatisticalRethinking
+	using Random
 end
 
 # ╔═╡ 81f65c1f-c44b-4e71-97e5-ae62a38c9b55
@@ -45,10 +46,9 @@ begin
 	posterior = prob_data .* prob_p
 	posterior /= sum(posterior);
 
-	samples_count = 10_000
-	cat = Categorical(posterior);
-	indices = rand(cat, samples_count)
-	samples = p_grid[indices];
+	Random.seed!(100)
+	samples_count = 10^4
+	samples = sample(p_grid, weights(posterior), samples_count)
 end
 
 # ╔═╡ 83cc1cc6-5989-41ba-8680-12b03c540288
@@ -102,8 +102,7 @@ begin
 	posterior2 = prob_data2 .* prob_p
 	posterior2 /= sum(posterior2)
 
-	cat2 = Categorical(posterior2);
-	samples2 = p_grid[rand(cat2, samples_count)];
+	samples2 = sample(p_grid, weights(posterior2), samples_count)
 end
 
 # ╔═╡ e0d0764e-4d9d-4009-be03-e882c8d782d3
